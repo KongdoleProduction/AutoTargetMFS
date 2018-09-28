@@ -20,7 +20,7 @@ void loop() {
     sensor_prev = millis();
     for (int i=0; i<SENSOR_NUM; i++) {
       boolean buf = digitalRead(sensor_pins[i]);
-      if (buf &&
+      if (!buf &&
           (millis() - sensor_last_hit[i] > SENSOR_UPDATE_PERIOD)) {
         sensor_last_hit[i] = millis();
         Serial.println(i, DEC);

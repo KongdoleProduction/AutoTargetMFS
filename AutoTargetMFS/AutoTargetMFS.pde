@@ -4,6 +4,7 @@ import processing.sound.*;
 PFont font_digit;
 
 SoundFile sound_hit;
+SoundFile sound_end;
 
 long ts_init = millis();
 boolean timeout = false;
@@ -21,6 +22,7 @@ void setup() {
   textFont(font_digit);
 
   sound_hit = new SoundFile(this, "hit.wav");
+  sound_end = new SoundFile(this, "game_over.wav");
 
   int portNum = 1; // change this number if port doens't match
   String portName = Serial.list()[portNum];
@@ -35,15 +37,20 @@ void draw() {
   textSize(230);
   text("TIME: ", 100, 230);
   long ts = millis();
-  int sec = 45 - int(ts - ts_init) / 1000;
-  int mil = 99 - (int(ts - ts_init) % 1000) / 10;
+  int sec = 0;
+  int mil = 0;
+  if (!timeout) {
+    sec = 45 - int(ts - ts_init) / 1000;
+    mil = 99 - (int(ts - ts_init) % 1000) / 10;
+  }
   if (sec < 10) {
     fill(0xffff0000);
   }
-  if (sec <= 0) {
+  if (sec <= 0 && !timeout) {
     sec = 0;
     mil = 0;
     timeout = true;
+    sound_end.play();
   }
 
   text(sec + "\"" + mil, 600, 230);

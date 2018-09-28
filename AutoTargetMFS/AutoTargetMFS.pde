@@ -1,6 +1,9 @@
 import processing.serial.*;
+import processing.sound.*;
 
 PFont font_digit;
+
+SoundFile sound_hit;
 
 long ts_init = millis();
 boolean timeout = false;
@@ -17,7 +20,9 @@ void setup() {
   font_digit = createFont("DS-DIGIT.ttf", 32);
   textFont(font_digit);
 
-  int portNum = 0; // change this number if port doens't match
+  sound_hit = new SoundFile(this, "hit.wav");
+
+  int portNum = 1; // change this number if port doens't match
   String portName = Serial.list()[portNum];
   myPort = new Serial(this, portName, 9600);
 }
@@ -46,10 +51,13 @@ void draw() {
   /* update score */
   if ( myPort.available() > 0) {
     buf = myPort.readStringUntil('\n');
-    println(buf);
-    if (!timeout && buf.length() > 0) {
-      int index = buf.charAt(0) - '0';
-      score += target_score[index];
+    if (buf != null) {
+      println(buf);
+      if (!timeout && buf.length() > 0) {
+        int index = buf.charAt(0) - '0';
+        score += target_score[index];
+        sound_hit.play(); 
+      }
     }
   } 
 
@@ -63,4 +71,3 @@ void draw() {
 
   delay(20);
 }
-

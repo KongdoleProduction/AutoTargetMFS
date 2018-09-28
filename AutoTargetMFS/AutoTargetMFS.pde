@@ -2,14 +2,12 @@ import processing.serial.*;
 
 PFont font_digit;
 
-int sec = 60;
-int mil = 99;
 long ts_init = millis();
 boolean timeout = false;
 
 int score = 0;
-int target_num = 4;
-int[] target_score = {100, 100, 100, 100};
+int target_num = 4; // change this
+int[] target_score = {100, 100, 100, 100}; // change this
 
 Serial myPort;
 String buf;
@@ -25,15 +23,15 @@ void setup() {
 }
 
 void draw() {
-
   background(0x2a2a2a);
   fill(0xfffedb21);
+
   /* draw time */
   textSize(230);
   text("TIME: ", 100, 230);
   long ts = millis();
-  sec = 60 - int(ts - ts_init) / 1000;
-  mil = 99 - (int(ts - ts_init) % 1000) / 10;
+  int sec = 45 - int(ts - ts_init) / 1000;
+  int mil = 99 - (int(ts - ts_init) % 1000) / 10;
   if (sec < 10) {
     fill(0xffff0000);
   }
@@ -49,12 +47,9 @@ void draw() {
   if ( myPort.available() > 0) {
     buf = myPort.readStringUntil('\n');
     println(buf);
-    if (!timeout) {
-      for (int i=0; i<target_num; i++) {
-        if (buf.charAt(i) == '1') {
-          score += target_score[i];
-        }
-      }
+    if (!timeout && buf.length() > 0) {
+      int index = buf.charAt(0) - '0';
+      score += target_score[index];
     }
   } 
 
